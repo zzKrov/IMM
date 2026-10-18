@@ -1,640 +1,234 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import base64
-
 
 # =========================================================
-# CONFIG
+# CONFIGURACIÓN GENERAL
 # =========================================================
-
 st.set_page_config(
-    page_title="Interfaces Multimodales",
+    page_title="Interfaces Multimodales // Krov Industries",
     page_icon="✦",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-
 # =========================================================
-# GLOBAL STYLE
+# LÍNEA BASE VISUAL: BRONCE REAL Y FLUIDOS DE OBSIDIANA
 # =========================================================
-
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap');
-
-.stApp {
-    background:
-        radial-gradient(
-            circle at 50% 0%,
-            #1c1920,
-            #0a090c 55%,
-            #050507 100%
-        );
-
-    color: #d8d3dc;
+html, body, [data-testid="stAppViewContainer"], .stApp {
+    background-color: #060508 !important;
+    color: #d8d3dc !important;
+    font-family: 'Montserrat', sans-serif !important;
+    overflow-x: hidden;
 }
 
-.block-container {
-    max-width: 1100px;
-    padding-top: 1.5rem;
-    padding-bottom: 3rem;
+[data-testid="stHeader"] { background: transparent !important; }
+
+/* 1. Malla de gradiente suave */
+.stApp {
+    background: linear-gradient(135deg, #060508 0%, #15121c 30%, #201b2a 60%, #09080c 100%) !important;
+    background-size: 300% 300% !important;
+    animation: royalMesh 18s ease infinite alternate !important;
+}
+
+@keyframes royalMesh {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 2. Fluidos orgánicos */
+.fluid-bronze-1 {
+    position: fixed;
+    top: 15%;
+    left: -120px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(197, 160, 89, 0.12) 0%, transparent 70%);
+    border-radius: 40% 60% 70% 30% / 50% 60% 40% 50%;
+    filter: blur(85px);
+    animation: bronzeDrift1 22s infinite alternate ease-in-out;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.fluid-bronze-2 {
+    position: fixed;
+    bottom: 5%;
+    right: -100px;
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(140, 110, 170, 0.1) 0%, transparent 70%);
+    border-radius: 60% 40% 50% 50% / 40% 50% 60% 50%;
+    filter: blur(90px);
+    animation: bronzeDrift2 25s infinite alternate ease-in-out;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes bronzeDrift1 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(100px, 60px) scale(1.15); }
+    100% { transform: translate(30px, 120px) scale(0.95); }
+}
+
+@keyframes bronzeDrift2 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-90px, -70px) scale(1.2); }
+    100% { transform: translate(-20px, -110px) scale(0.9); }
+}
+
+.brand-signature {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: #c5a059;
+    text-transform: uppercase;
+    margin-bottom: 2px;
 }
 
 h1, h2, h3 {
-    font-family: 'Cinzel', Georgia, serif !important;
-    font-weight: 500 !important;
+    font-family: 'Cinzel', serif !important;
     letter-spacing: 0.06em;
 }
 
-h1 {
-    font-size: 1.65rem !important;
+.main-title {
+    font-size: 2.1rem;
+    font-weight: 600;
+    text-align: center;
+    color: #f3eff6;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 0 25px rgba(197, 160, 89, 0.35);
 }
 
-h2 {
-    font-size: 1.15rem !important;
+.sub-lead {
+    text-align: center;
+    color: #948f98;
+    font-size: 0.95rem;
+    margin-bottom: 1.8rem;
 }
 
-h3 {
-    font-size: 0.95rem !important;
+.interface-frame {
+    background: rgba(16, 14, 22, 0.85);
+    border: 1px solid rgba(197, 160, 89, 0.3);
+    border-radius: 8px;
+    padding: 24px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+    margin-bottom: 20px;
 }
 
-p, label {
-    font-family: 'Montserrat', sans-serif !important;
-    font-size: 0.82rem !important;
-    color: #aaa4ae;
+div.stButton > button {
+    border-radius: 4px !important;
+    font-family: 'Cinzel', serif !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.08em !important;
+    background: linear-gradient(135deg, #1c1724, #0f0c14) !important;
+    color: #e4dfe8 !important;
+    border: 1px solid rgba(197, 160, 89, 0.4) !important;
+    padding: 0.75rem 1.6rem !important;
+    transition: all 0.25s ease !important;
 }
 
-.stTextInput input {
-    background: #0e0d11 !important;
-    color: #ddd9e0 !important;
-    border: 1px solid #302c35 !important;
-    border-radius: 3px !important;
-    font-family: 'Montserrat', sans-serif !important;
+div.stButton > button:hover {
+    border-color: #c5a059 !important;
+    box-shadow: 0 0 25px rgba(197, 160, 89, 0.35) !important;
+    transform: translateY(-2px);
 }
-
-.stButton > button {
-    background: linear-gradient(180deg, #18151c, #0e0d11);
-    color: #dcd6df;
-    border: 1px solid #39333f;
-    border-radius: 3px;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.08em;
-}
-
-.stButton > button:hover {
-    border-color: #80738b;
-    background: #211c25;
-}
-
-[data-testid="column"] {
-    background: rgba(255,255,255,0.018);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 3px;
-    padding: 1rem 1.1rem;
-}
-
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #09080c, #100e14);
-    border-right: 1px solid #27232c;
-}
-
 </style>
+
+<div class="fluid-bronze-1"></div>
+<div class="fluid-bronze-2"></div>
 """, unsafe_allow_html=True)
 
+st.markdown('<div class="brand-signature">Krov Industries · Sistemas Sensoriales</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">Interfaces Multimodales</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-lead">Exploración de canales táctiles, visuales y acústicos en una única superficie de interacción</div>', unsafe_allow_html=True)
 
 # =========================================================
-# IMAGE
+# LIENZO VISUAL CON PARTÍCULAS
 # =========================================================
-
-with open("Interfaces Mult2.png", "rb") as file:
-    image_data = base64.b64encode(file.read()).decode()
-
-
-# =========================================================
-# CANVAS
-# =========================================================
-
-html = """
+html_canvas = """
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
 <style>
-
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: transparent;
+body { margin: 0; background: transparent; overflow: hidden; }
+#box {
+    position: relative; width: 100%; height: 260px;
+    background: radial-gradient(circle at 50% 50%, rgba(32, 27, 42, 0.8), rgba(11, 9, 15, 0.95));
+    border: 1px solid rgba(197, 160, 89, 0.35); border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-
-#interface {
-    position: relative;
-    width: 100%;
-    height: 390px;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(
-            135deg,
-            #111015,
-            #08070a
-        );
-
-    border: 1px solid #29242e;
-    border-radius: 3px;
-}
-
-
-/* GRID */
-
-#interface::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background-image:
-        linear-gradient(
-            rgba(150,140,160,0.035) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(150,140,160,0.035) 1px,
-            transparent 1px
-        );
-
-    background-size: 30px 30px;
-}
-
-
-/* PARTICLES */
-
-#particles {
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    pointer-events: none;
-}
-
-
-/* CONTENT */
-
-.content {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform: translate(-50%, -50%);
-
-    width: 100%;
-
-    text-align: center;
-
-    z-index: 2;
-}
-
-
-.title {
-    font-family: Cinzel, Georgia, serif;
-
-    font-size: clamp(28px, 5vw, 52px);
-
-    letter-spacing: 0.18em;
-
-    color: #ddd7e1;
-}
-
-
-.subtitle {
-    margin-top: 6px;
-
-    font-family: Montserrat, sans-serif;
-
-    font-size: 10px;
-
-    letter-spacing: 0.3em;
-
-    text-transform: uppercase;
-
-    color: #77707d;
-}
-
-
-.image {
-    display: block;
-
-    width: 150px;
-    height: 150px;
-
-    object-fit: contain;
-
-    margin: 18px auto 0;
-
-    border: 1px solid rgba(255,255,255,0.10);
-}
-
-
-/* CORNERS */
-
-.corner {
-    position: absolute;
-
-    width: 18px;
-    height: 18px;
-
-    border: 1px solid #62596a;
-
-    z-index: 3;
-}
-
-.top-left {
-    top: 7px;
-    left: 7px;
-
-    border-right: none;
-    border-bottom: none;
-}
-
-.top-right {
-    top: 7px;
-    right: 7px;
-
-    border-left: none;
-    border-bottom: none;
-}
-
-.bottom-left {
-    bottom: 7px;
-    left: 7px;
-
-    border-right: none;
-    border-top: none;
-}
-
-.bottom-right {
-    bottom: 7px;
-    right: 7px;
-
-    border-left: none;
-    border-top: none;
-}
-
+canvas { position: absolute; inset: 0; pointer-events: none; }
+.title { font-family: 'Cinzel', Georgia, serif; font-size: 24px; color: #f3eff6; letter-spacing: 0.15em; z-index: 2; text-align: center; }
+.sub { font-family: 'Montserrat', sans-serif; font-size: 11px; color: #c5a059; letter-spacing: 0.25em; text-transform: uppercase; margin-top: 6px; z-index: 2; }
 </style>
-
 </head>
-
-
 <body>
-
-<div id="interface">
-
-    <canvas id="particles"></canvas>
-
-    <div class="corner top-left"></div>
-    <div class="corner top-right"></div>
-    <div class="corner bottom-left"></div>
-    <div class="corner bottom-right"></div>
-
-
-    <div class="content">
-
-        <div class="title">
-            HOLA<br>Mi nombre es Juan
-        </div>
-
-        <div class="subtitle">
-            Interfaces multimodales
-        </div>
-
-        <img
-            class="image"
-            src="data:image/png;base64,IMAGE_DATA"
-        >
-
-    </div>
-
+<div id="box">
+    <canvas id="c"></canvas>
+    <div class="title">INTERACCIÓN INTEGRADA</div>
+    <div class="sub">CANAL VISUAL · AUDITIVO · HÁPTICO</div>
 </div>
-
-
 <script>
-
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-const interfaceBox = document.getElementById("interface");
-
-let particles = [];
-
-
-function resize() {
-
-    canvas.width = interfaceBox.clientWidth;
-    canvas.height = interfaceBox.clientHeight;
-
-}
-
-
-resize();
-
-window.addEventListener("resize", resize);
-
-
-interfaceBox.addEventListener("mousemove", function(event) {
-
-    const rect = interfaceBox.getBoundingClientRect();
-
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-
-    for (let i = 0; i < 3; i++) {
-
-        particles.push({
-
-            x: x,
-            y: y,
-
-            vx: (Math.random() - 0.5) * 0.8,
-            vy: (Math.random() - 0.5) * 0.8,
-
-            life: 1,
-
-            size: Math.random() * 1.5 + 0.5
-
-        });
-
+const c = document.getElementById('c'), ctx = c.getContext('2d'), box = document.getElementById('box');
+let w = c.width = box.clientWidth, h = c.height = box.clientHeight;
+window.addEventListener('resize', () => { w = c.width = box.clientWidth; h = c.height = box.clientHeight; });
+const pts = [];
+box.addEventListener('mousemove', (e) => {
+    const r = box.getBoundingClientRect();
+    for(let i=0; i<2; i++) {
+        pts.push({ x: e.clientX - r.left, y: e.clientY - r.top, vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2, a: 1 });
     }
-
 });
-
-
-function animate() {
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    for (
-        let i = particles.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const p = particles[i];
-
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        p.life -= 0.025;
-
-
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x,
-            p.y,
-            p.size,
-            0,
-            Math.PI * 2
-        );
-
-
-        ctx.fillStyle =
-            "rgba(190,175,205," +
-            (p.life * 0.5) +
-            ")";
-
-
-        ctx.fill();
-
-
-        if (p.life <= 0) {
-
-            particles.splice(i, 1);
-
-        }
-
+function loop() {
+    ctx.clearRect(0,0,w,h);
+    for(let i=pts.length-1; i>=0; i--) {
+        const p = pts[i]; p.x += p.vx; p.y += p.vy; p.a -= 0.025;
+        if(p.a <= 0) { pts.splice(i,1); continue; }
+        ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(197, 160, 89, ${p.a})`; ctx.fill();
     }
-
-
-    requestAnimationFrame(animate);
-
+    requestAnimationFrame(loop);
 }
-
-
-animate();
-
+loop();
 </script>
-
 </body>
-
 </html>
 """
-
-
-# Insert image AFTER the HTML string has been completely defined
-html = html.replace(
-    "IMAGE_DATA",
-    image_data
-)
-
-
-components.html(
-    html,
-    height=410
-)
-
+components.html(html_canvas, height=280)
 
 # =========================================================
-# MAIN PAGE
+# CONTROLES Y CANALES MULTIMODALES
 # =========================================================
+c_left, c_right = st.columns([1.1, 1], gap="large")
 
-st.title(
-    "Interfaces multimodales"
-)
+with c_left:
+    st.markdown('<div class="interface-frame">', unsafe_allow_html=True)
+    st.markdown("### 1. Parámetros de Entrada")
+    texto = st.text_input("Mensaje contextual:", value="Exploración sensorial continua")
+    st.caption(f"Valor registrado: {texto}")
+    
+    st.write("")
+    acepta = st.checkbox("Habilitar canal háptico complementario", value=True)
+    if acepta:
+        st.info("Respuesta táctil y háptica habilitada para dispositivos compatibles.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.header(
-    "Backend + frontend en una sola interfaz."
-)
-
-st.write(
-    "Explorando diferentes modalidades de interacción."
-)
-
-
-# =========================================================
-# TEXT
-# =========================================================
-
-texto = st.text_input(
-    "Texto",
-    "Este es mi texto"
-)
-
-st.write(
-    "Texto:",
-    texto
-)
-
-
-# =========================================================
-# MODALIDADES
-# =========================================================
-
-st.subheader(
-    "Modalidades"
-)
-
-
-col1, col2 = st.columns(2)
-
-
-with col1:
-
-    st.subheader(
-        "Experiencia"
-    )
-
-    st.write(
-        "Las interfaces multimodales "
-        "mejoran la interacción."
-    )
-
-    resp = st.checkbox(
-        "Estoy de acuerdo"
-    )
-
-    if resp:
-        st.write(
-            "Correcto."
-        )
-
-
-with col2:
-
-    st.subheader(
-        "Modalidad"
-    )
-
-    modo = st.radio(
-        "Principal",
-        [
-            "Visual",
-            "Auditiva",
-            "Táctil"
-        ]
-    )
-
-    if modo == "Visual":
-
-        st.write(
-            "La vista domina."
-        )
-
-    elif modo == "Auditiva":
-
-        st.write(
-            "El audio domina."
-        )
-
-    else:
-
-        st.write(
-            "El tacto domina."
-        )
-
-
-# =========================================================
-# BUTTON
-# =========================================================
-
-st.subheader(
-    "Acción"
-)
-
-
-if st.button("Presiona"):
-
-    st.write(
-        "Gracias."
-    )
-
-else:
-
-    st.write(
-        "Sin acción."
-    )
-
-
-# =========================================================
-# SELECTBOX
-# =========================================================
-
-st.subheader(
-    "Salida"
-)
-
-
-in_mod = st.selectbox(
-    "Modalidad",
-    [
-        "Audio",
-        "Visual",
-        "Háptico"
-    ]
-)
-
-
-if in_mod == "Audio":
-
-    set_mod = "Reproducir audio"
-
-elif in_mod == "Visual":
-
-    set_mod = "Reproducir video"
-
-else:
-
-    set_mod = "Activar vibración"
-
-
-st.write(
-    "Acción:",
-    set_mod
-)
-
-
-# =========================================================
-# SIDEBAR
-# =========================================================
-
-with st.sidebar:
-
-    st.subheader(
-        "Configuración"
-    )
-
-    mod_radio = st.radio(
-        "Modalidad",
-        [
-            "Visual",
-            "Auditiva",
-            "Háptica"
-        ]
-    )
+with c_right:
+    st.markdown('<div class="interface-frame">', unsafe_allow_html=True)
+    st.markdown("### 2. Modulación de Salida")
+    modo = st.radio("Canal principal preferente:", ["Visual", "Auditiva", "Háptica"], horizontal=True)
+    
+    salida_tipo = st.selectbox("Modo de respuesta:", ["Reproducir audio ambiental", "Desplegar interfaz óptica", "Activar vibración táctil"])
+    
+    st.write("")
+    if st.button("Ejecutar acción multimodal", use_container_width=True):
+        st.success(f"Canal activo: {modo} // Salida: {salida_tipo}")
+    st.markdown('</div>', unsafe_allow_html=True)
