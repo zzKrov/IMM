@@ -476,7 +476,7 @@ with c_out:
             if st.button("Ejecutar pulso óptico", use_container_width=True):
                 # Destello neón suave en toda la pantalla
                 st.markdown('<div class="screen-neon-flash"></div>', unsafe_allow_html=True)
-                st.success("Pulso óptico emitido: Destello neón activo en toda la pantalla.")
+                st.success("Pulso emitido: Destello.")
         else:
             set_mod = "Activar vibración"
             st.write("Acción:", set_mod)
